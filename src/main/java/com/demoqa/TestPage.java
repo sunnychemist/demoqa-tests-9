@@ -28,7 +28,7 @@ public class TestPage {
     private static SelenideElement city = $("#city");
     private static ElementsCollection cities = city.$$x(".//div[contains(@class, 'menu')]//*");
     private static SelenideElement uploadPhotoInput = $("#uploadPicture");
-    private static SelenideElement sportCheckBox = $("#hobbies-checkbox-1");
+    private static ElementsCollection labels =  $$("label.custom-control-label");
     private static SelenideElement currentAddressTextArea = $("#currentAddress");
     private static SelenideElement modalContainer = $(".table-responsive");
     private static SelenideElement nameValue = modalContainer.$x(".//tr[1]//td[2]");
@@ -75,7 +75,9 @@ public class TestPage {
     }
 
     public TestPage selectMonth(String month) {
-        monthSelector.selectOption(month);
+        monthSelector
+                .scrollTo()
+                .selectOption(month);
         return this;
 
     }
@@ -99,15 +101,19 @@ public class TestPage {
                 .click();
         return this;
     }
-    public TestPage selectHobby() {
-        sportCheckBox
-                .scrollTo()
+    public TestPage selectHobby(String hobby) {
+        labels
+                .filter(exactText(hobby))
+                .first().scrollTo()
                 .parent()
                 .click();
         return this;
     }
-    public TestPage selectSex() {
-        sexRadioButton.click();
+    public TestPage selectGender(String gender) {
+        labels
+                .filter(exactText(gender))
+                .first()
+                .click();
         return this;
     }
     public TestPage fillInAddress(String address) {
@@ -129,7 +135,7 @@ public class TestPage {
         return this;
     }
     public TestPage fillInCities(String cityName) {
-        states
+        cities
                 .find(exactText(cityName))
                 .click();
         return this;
@@ -143,32 +149,55 @@ public class TestPage {
         return this;
     }
 
-    public TestPage nameShouldBe(String firstName, String lastName) {
-        nameValue.shouldHave(exactText(String.format("%s %s", firstName, lastName)));
+    public TestPage fillInAllFields(Student student) {
+        return
+                fillInFirstName(student.getFirstName())
+                .fillInLastName(student.getLastName())
+                .fillInEmail(student.getEmail())
+                .fillInMobilePhone(student.getMobileNumber())
+                .dateOfBirthClick()
+                .selectMonth(student.getMonth())
+                .selectYear(student.getYear())
+                .selectDay(student.getDay())
+                .fillInSubject(student.getSubject())
+                .selectSubject()
+                .selectHobby(student.getHobby())
+                .selectGender(student.getGender())
+                .fillInAddress(student.getAddress())
+                .stateClick()
+                .fillInStates(student.getState())
+                .cityClick()
+                .fillInCities(student.getCity())
+                .uploadPhotoInput(student.getPhoto())
+                .pushSubmit();
+    }
+
+    public TestPage nameShouldBe(String fullName) {
+        nameValue.shouldHave(exactText(fullName));
         return this;
     }
     public TestPage emailShouldBe(String email) {
         emailValue.shouldHave(exactText(email));
         return this;
     }
-    public TestPage genderShouldBe() {
-        genderValue.shouldHave(exactText("Female"));
+    public TestPage genderShouldBe(String gender) {
+        genderValue.shouldHave(exactText(gender));
         return this;
     }
     public TestPage mobileNumberShouldBe(String mobilePhone) {
         mobileNumberValue.shouldHave(exactText(mobilePhone));
         return this;
     }
-    public TestPage birthdayValueShouldBe(String day, String month, String year) {
-        birthdayValue.shouldHave(exactText(String.format("%s %s,%s", day, month, year)));
+    public TestPage birthdayValueShouldBe(String birthday) {
+        birthdayValue.shouldHave(exactText(birthday));
         return this;
     }
     public TestPage subjectValueShouldBe(String subject) {
         subjectValue.shouldHave(exactText(subject));
         return this;
     }
-    public TestPage hobbyValueShouldBe() {
-        hobbyValue.shouldHave(exactText("Sports"));
+    public TestPage hobbyValueShouldBe(String hobby) {
+        hobbyValue.shouldHave(exactText(hobby));
         return this;
     }
     public TestPage pictureValueShouldBe() {
@@ -179,8 +208,21 @@ public class TestPage {
         currentAddressValue.shouldHave(exactText(address));
         return this;
     }
-    public TestPage stateAndCityValueShouldBe(String stateName, String cityName) {
-        stateAndCityValue.shouldHave(exactText(String.format("%s %s", stateName, cityName)));
+    public TestPage stateAndCityValueShouldBe(String fullAddress) {
+        stateAndCityValue.shouldHave(exactText(fullAddress));
         return this;
+    }
+
+    public TestPage checkResult(Student student) {
+        return nameShouldBe(student.getFullName())
+                .emailShouldBe(student.getEmail())
+                .genderShouldBe(student.getGender())
+                .mobileNumberShouldBe(student.getMobileNumber())
+                .birthdayValueShouldBe(student.getBirthday())
+                .subjectValueShouldBe(student.getSubject())
+                .hobbyValueShouldBe(student.getHobby())
+                .pictureValueShouldBe()
+                .currentAddressValueShouldBe(student.getAddress())
+                .stateAndCityValueShouldBe(student.getFullAddress());
     }
 }
