@@ -1,8 +1,9 @@
-package com.demoqa;
+package com.demoqa.pages;
 
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
+import com.demoqa.dto.Student;
 
 import java.io.File;
 
@@ -44,7 +45,8 @@ public class TestPage {
     private static SelenideElement submitButton = $("#submit");
 
     public TestPage open() {
-        Selenide.open("https://demoqa.com/automation-practice-form");
+//        Selenide.open("https://demoqa.com/automation-practice-form");
+        Selenide.open("/automation-practice-form");
         return this;
     }
 

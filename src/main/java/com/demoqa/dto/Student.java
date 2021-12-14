@@ -1,4 +1,4 @@
-package com.demoqa;
+package com.demoqa.dto;
 
 import com.github.javafaker.Faker;
 
