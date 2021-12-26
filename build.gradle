@@ -27,7 +27,8 @@ repositories {
 
 dependencies {
     testImplementation (
-           "org.junit.jupiter:junit-jupiter-api:5.8.1")
+           "org.junit.jupiter:junit-jupiter-api:5.8.1",
+            "org.aeonbits.owner:owner:1.0.12")
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.8.1"
     implementation 'com.codeborne:selenide:5.24.2'
 //    implementation 'com.codeborne:selenide:6.0.3'
@@ -39,4 +40,38 @@ dependencies {
 
 test {
     useJUnitPlatform()
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+tasks.withType(Test) {
+//    systemProperty("environment", System.getProperty("environment", "stage")) // preprod, prod
+
+    systemProperties(System.getProperties())
+    useJUnitPlatform()
+
+    testLogging {
+        lifecycle {
+//            events "started", "failed"
+            events "started", "skipped", "failed", "standard_error", "standard_out"
+            exceptionFormat "short"
+        }
+    }
+}
+
+task properties_tests(type: Test) {
+    systemProperty("browserSize", System.getProperty("browserSize", "400x400"))
+    useJUnitPlatform {
+        includeTags "properties"
+    }
+}
+
+task many_tags_tests(type: Test) {
+    useJUnitPlatform {
+        includeTags "properties"
+        includeTags "smoke"
+        excludeTags "prod"
+    }
 }
