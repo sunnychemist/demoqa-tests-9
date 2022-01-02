@@ -180,7 +180,6 @@ public class Student {
 
     public static class StudentBuilder {
         static Faker faker = new Faker();
-
         private Student student;
 
         public StudentBuilder() {
